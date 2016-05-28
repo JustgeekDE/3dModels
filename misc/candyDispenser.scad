@@ -16,7 +16,7 @@ module screwCutout(shaftDiameter, shaftLength, headDiameter, headLength) {
 }
 
 module m3Cutout(length) {
-  screwCutout(3.4, length, 5.5, 5);
+  screwCutout(3.4, length, 5.5, 8);
 }
 
 module gearFixationBolts(scaleFactor = 1){
@@ -34,7 +34,7 @@ module gearFixationBolts(scaleFactor = 1){
   }
 }
 
-module candyGear(thickness = 5, bolts=false) {
+module candyGear(thickness = 5, bolts=false, bore_diameter = 3.4) {
   gearThickness = thickness - 0.4;
   teeth          = 12;
   circular_pitch = 330;
@@ -44,13 +44,12 @@ module candyGear(thickness = 5, bolts=false) {
         number_of_teeth = teeth,
         circular_pitch  = circular_pitch,
         backlash        = 0.7,
-        bore_diameter   = 0,
+        bore_diameter   = bore_diameter,
         hub_thickness   = gearThickness,
         gear_thickness  = gearThickness,
         rim_thickness   = gearThickness,
         rim_width       = 5,
-        circles = 4,
-        bore_diameter = 3.4
+        circles = 4
 
     );
     if(bolts == true){
@@ -77,6 +76,8 @@ module candyPortioner(diameter, length) {
           rotate([90,0,-90])
           rotate([0,0,45])
           cylinder(h = cutoutHeight, r1 = cutoutSize, r2 = cutoutSize+5, $fn = 4);
+          translate([(diameter/2)-2, -diameter,-length/2])
+          cube([10, diameter *2, length *2]);
         }
         gearFixationBolts(1.1);
 
@@ -165,7 +166,50 @@ module all(){
   basePlate();
 }
 
-$fn = 70;
+$fn = 120;
 
+
+module servoGear(bore, hub) {
+  teeth          = 12;
+  circular_pitch = 330;
+  thickness = 3;
+  difference(){
+    gear (
+        number_of_teeth = teeth,
+        circular_pitch  = circular_pitch,
+        backlash        = 0.7,
+        bore_diameter   = bore,
+        hub_diameter    = 8,
+        hub_thickness   = thickness+1,
+        gear_thickness  = thickness,
+        rim_thickness   = thickness,
+        rim_width       = 30,
+        circles = 0
+
+    );
+    translate([0,0,thickness-1.5
+      ])
+    tube(hub, 5);
+    translate([0,0,-4.0])
+    tube(5, 5);
+  }
+}
+//candyPortioner(30, 40);
 
 all();
+//candyGear();
+/*
+for(factor = [0:1]) {
+  translate([30*factor,0,0])
+  rotate([0,0,factor*16])
+  servoGear(2.6+0.3*factor, 4.5);
+}
+
+translate([0,30,0]){
+  for(factor = [0:1]) {
+    translate([30*factor,0,0])
+    rotate([0,0,factor*16])
+    servoGear(2.8, 4.3+0.3*factor);
+  }
+}
+*/

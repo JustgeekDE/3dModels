@@ -16,28 +16,49 @@ module screwCutout(shaftDiameter, shaftLength, headDiameter, headLength) {
 }
 
 module m3Cutout(length) {
-  screwCutout(3.4, length, 5.5, 8);
+  screwCutout(3.4, length, 5.5, 14);
 }
 
 module gearFixationBolts(scaleFactor = 1){
-  boltDiameter = 2.5;
+  boltDiameter = 13;
+  boltLength = 2.5+0.1;
+
+  color("red")
+  translate([0,0,-0.1])
+  difference(){
+    scale(scaleFactor)
+    tube(boltDiameter, boltLength+0.1);
+
+    union(){
+      scale(1/scaleFactor)
+      translate([0,0,-2*boltLength])
+      tube(8, boltLength*5);
+      translate([0,-boltDiameter,-2*boltLength])
+      cube([2*boltDiameter, 2*boltDiameter, 5*boltLength]);
+
+    }
+  }
+}
+
+module gearFixationBolts2(scaleFactor = 1){
+  boltDiameter = 4.25;
   boltLength = 2.5;
 
   color("red")
   translate([0,0,-0.1])
   for (a =[0:90:360]) {
     rotate([0,0,a]) {
-      translate([0,5,0])
+      translate([0,5.5,0])
       scale(scaleFactor)
       tube(boltDiameter, boltLength+0.1);
     }
   }
 }
 
-module candyGear(thickness = 5, bolts=false, bore_diameter = 3.4) {
+module candyGear(thickness = 5, bolts=false, bore_diameter = 3.6) {
   gearThickness = thickness - 0.4;
   teeth          = 12;
-  circular_pitch = 330;
+  circular_pitch = 390;
   translate([0,0,-0.2])
   union() {
     gear (
@@ -54,125 +75,15 @@ module candyGear(thickness = 5, bolts=false, bore_diameter = 3.4) {
     );
     if(bolts == true){
       translate([0,0,gearThickness])
-      gearFixationBolts();
+      gearFixationBolts(1);
     }
   }
 }
-
-module candyPortioner(diameter, length) {
-  radius = diameter / 2;
-
-  rotate([0,90,0]) {
-    difference() {
-      difference(){
-        difference() {
-          cutoutSize = (length/2) - 4;
-          insetDepth = 6;
-          cutoutHeight = radius + insetDepth + 1;
-          tube(diameter, length);
-          translate([insetDepth,0,0])
-          translate([0,0,length/2])
-          scale([1,(diameter/length),1])
-          rotate([90,0,-90])
-          rotate([0,0,45])
-          cylinder(h = cutoutHeight, r1 = cutoutSize, r2 = cutoutSize+5, $fn = 4);
-          translate([(diameter/2)-2, -diameter,-length/2])
-          cube([10, diameter *2, length *2]);
-        }
-        gearFixationBolts(1.1);
-
-      }
-      color("white") {
-        shaftLength = 25;
-        translate([0,0,-shaftLength+3])
-        m3Cutout(shaftLength);
-        rotate([0,180,0])
-        translate([0,0,-length-shaftLength+3])
-        m3Cutout(shaftLength);
-      }
-    }
-  }
-}
-
-module supportStrut(thickness, width, height, singleSupport) {
-  translate([-thickness/2, -width/2,0])
-  union(){
-    cube([thickness,width,height]);
-    translate([thickness/2,(width-thickness)/2,width/2])
-    rotate([0,-90,0])
-    rotate([-90,0,0])
-    cylinder(thickness,width,width,$fn=3);
-  }
-}
-
-module supportStrutWithHole(thickness, width, height, diameter, holeHeight, offsetFromCenter = 0, singleSupport = false) {
-  difference(){
-    supportStrut(thickness, width, height, singleSupport);
-    translate([-thickness,offsetFromCenter,holeHeight])
-    rotate([0,90,0])
-    tube(diameter, 2*thickness);
-  }
-}
-
-
-module basePlate() {
-  color("grey")
-  union(){
-    cube([80,80,1]);
-
-    translate([29.2,30.3,0])
-    union() {
-      supportStrutWithHole(2,7,22, diameter=2.2, holeHeight=15, offsetFromCenter=1.3);
-      translate([5,0,0])
-      supportStrutWithHole(2,7,22, diameter=2.2, holeHeight=15, offsetFromCenter=1.3);
-    }
-
-    translate([29.2,60.3,0])
-    union() {
-      supportStrutWithHole(2,7,22, diameter=2.2, holeHeight=15, offsetFromCenter=-1.3);
-      translate([5,0,0])
-      supportStrutWithHole(2,7,22, diameter=2.2, holeHeight=15, offsetFromCenter=-1.3);
-    }
-
-    translate([56.5,40,0])
-    supportStrutWithHole(2,10,42, diameter=3.4, holeHeight=37);
-
-    translate([18.5,40,0])
-    supportStrutWithHole(2,10,42, diameter=3.4, holeHeight=37);
-  }
-}
-
-module all(){
-  translate([-15,0,37])
-  candyPortioner(30, 30);
-
-  translate([-20,0,37])
-  rotate([0,90,0])
-  color("green")
-  candyGear(bolts=true);
-
-  translate([-20,0,15])
-  rotate([0,90,0])
-  rotate([0,0,15])
-  color("blue")
-  candyGear();
-
-  translate([10,0,15])
-  rotate([0,270,0])
-  color([0.3,0,0.3])
-  alignds420(screws=1);
-
-  translate([-40,-40,0])
-  basePlate();
-}
-
-$fn = 120;
-
 
 module servoGear(bore, hub) {
   teeth          = 12;
-  circular_pitch = 330;
-  thickness = 3;
+  circular_pitch = 390;
+  thickness = 4;
   difference(){
     gear (
         number_of_teeth = teeth,
@@ -194,10 +105,218 @@ module servoGear(bore, hub) {
     tube(5, 5);
   }
 }
+
+module candyPortioner(diameter, length) {
+  radius = diameter / 2;
+
+  rotate([0,90,0]) {
+    difference() {
+      difference(){
+        difference() {
+          cutoutSize = (length/2) - 4;
+          insetDepth = 3;
+          cutoutHeight = radius + insetDepth + 1;
+          tube(diameter, length);
+          translate([insetDepth,0,0])
+          translate([0,0,length/2])
+          scale([1,(diameter/length),1])
+          rotate([90,0,-90])
+          rotate([0,0,45])
+          cylinder(h = cutoutHeight, r1 = cutoutSize-5, r2 = cutoutSize+10, $fn = 4);
+          translate([(diameter/2)-2, -diameter,-length/2])
+          cube([10, diameter *2, length *2]);
+        }
+        gearFixationBolts(1.2);
+
+      }
+      color("white") {
+        shaftLength = 25;
+        translate([0,0,-shaftLength+3])
+        m3Cutout(shaftLength);
+        rotate([0,180,0])
+        translate([0,0,-length-shaftLength+3])
+        m3Cutout(shaftLength);
+      }
+    }
+  }
+}
+
+module supportStrut(thickness, width, height, singleSupport, singleSupport = false) {
+  translate([-thickness/2, -width/2,0])
+  union(){
+    cube([thickness,width,height]);
+    difference() {
+      translate([0,(width-2)/2,width/2])
+      rotate([0,-90,0])
+      rotate([-90,0,0])
+      union(){
+        translate([0,0,0])
+        cylinder(2,width,width,$fn=3);
+        translate([0,thickness,0])
+        cylinder(2,width,width,$fn=3);
+
+      }
+      if(singleSupport == true) {
+        translate([thickness/2,-width/2,-height/2])
+        cube([width*2,width*2,height*2]);
+      }
+    }
+  }
+}
+
+module supportStrutWithHole(thickness, width, height, diameter, holeHeight, offsetFromCenter = 0, singleSupport = false) {
+  difference(){
+    supportStrut(thickness, width, height, singleSupport);
+    translate([-thickness,offsetFromCenter,holeHeight])
+    rotate([0,90,0])
+    tube(diameter, 2*thickness);
+  }
+}
+
+module servoStrut(thickness, width, height, diameter, holeHeight, offsetFromCenter = 0, singleSupport = false) {
+  servoThickness = 2.8;
+  difference(){
+    supportStrutWithHole(thickness, width, height, diameter, holeHeight, offsetFromCenter, singleSupport);
+    translate([-servoThickness/2,-width,holeHeight-5])
+    cube([servoThickness,2*width, height]);
+  }
+}
+
+
+module basePlate() {
+  translate([-37.5,-37.5,0])
+  union(){
+    cube([75,75,1]);
+
+    translate([-2.5,-2.5,0]){
+      union(){
+        translate([26.7,30.3,0])
+        servoStrut(7,7,servoHeight+5, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=1.3);
+
+        translate([26.7,60.3,0])
+        servoStrut(7,7,servoHeight+5, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=-1.3);
+
+        translate([23.2,33,0])
+        cube([23,25,servoHeight-6.5]);
+
+      }
+
+      translate([62.5,40,0])
+      supportStrutWithHole(4,10,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth);
+
+      translate([12.5,40,0])
+      supportStrutWithHole(3,10,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth, singleSupport = true);
+    }
+
+    chuteWidth = 36;
+    chuteStrength =2;
+    chuteHeight = 15;
+    translate([37.5-chuteWidth/2,0,0.9])
+    difference(){
+      union(){
+        difference() {
+          difference() {
+            translate([0,0,-2])
+            difference(){
+              translate([-chuteStrength,-1,0])
+              union(){
+                color("lime")
+                translate([0,0,3])
+                cube([chuteWidth+2*chuteStrength,25,27]);
+                color("red")
+                translate([0,24,20])
+                rotate([45,0,0])
+                cube([chuteWidth+2*chuteStrength,16,chuteHeight]);
+                translate([0,0,5])
+                rotate([33,0,0])
+                cube([chuteWidth+2*chuteStrength,30,chuteHeight]);
+              }
+              translate([0,0,5])
+              union(){
+                color("purple")
+                rotate([33,0,0])
+                translate([0,-10,chuteStrength])
+                cube([chuteWidth,35.5,chuteHeight+10]);
+                color("green")
+                rotate([45,0,0])
+                translate([0,25,chuteStrength-5.3])
+                cube([chuteWidth,80,chuteHeight+10]);
+              }
+            }
+            color("blue")
+            translate([-20,37.5,dispenserHeigth-0.9])
+            rotate([0,90,0])
+            tube(32,80);
+          }
+          color("red")
+          translate([-5,-40,-5])
+          cube([chuteWidth+10,40,80]);
+        }
+      }
+      color("blue")
+      translate([0,-1,0]) {
+        cube([10,15,3]);
+        translate([13,0,0])
+        cube([10,15,3]);
+        translate([26,0,0])
+        cube([10,15,3]);
+
+      }
+    }
+  }
+}
+
+module all(){
+  rotation = 110 * 2 * abs($t-0.5);
+
+  translate([-20,0,dispenserHeigth])
+  rotate([rotation,0,0])
+  candyPortioner(30, 40);
+
+  translate([-25,0,dispenserHeigth])
+  rotate([rotation,0,0]){
+    rotate([0,90,0])
+    color("green")
+    candyGear(bolts=true);
+
+  }
+
+  translate([-25,0,servoHeight])
+  rotate([-rotation,0,0]){
+    rotate([0,90,0])
+    rotate([0,0,15])
+    color("blue")
+    servoGear(3.0, 4.65);
+  }
+
+  translate([5,0,servoHeight])
+  rotate([0,270,0])
+  color([0.3,0,0.3])
+  alignds420(screws=1);
+
+  color("grey")
+  basePlate();
+}
+
+$t = 1;
+$fn = 130;
+pitchRadius = 13;
+servoHeight = pitchRadius+5;
+dispenserHeigth = 2*pitchRadius+servoHeight;
+
 //candyPortioner(30, 40);
 
 all();
-//candyGear();
+//basePlate();
+//translate([-37.5,37.5,0])
+//cube([75,1,75]);
+
+//candyGear(bolts=true);
+//candyPortioner(30, 40);
+
+//translate([0,30,0])
+//servoGear(3.0, 4.7);
+
 /*
 for(factor = [0:1]) {
   translate([30*factor,0,0])

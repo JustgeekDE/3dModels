@@ -16,11 +16,11 @@ module screwCutout(shaftDiameter, shaftLength, headDiameter, headLength) {
 }
 
 module m3Cutout(length) {
-  screwCutout(3.4, length, 5.5, 14);
+  screwCutout(3.4, length, 6, 14);
 }
 
 module gearFixationBolts(scaleFactor = 1){
-  boltDiameter = 13;
+  boltDiameter = 16.5;
   boltLength = 2.5+0.1;
 
   color("red")
@@ -58,7 +58,7 @@ module gearFixationBolts2(scaleFactor = 1){
 module candyGear(thickness = 5, bolts=false, bore_diameter = 3.6) {
   gearThickness = thickness - 0.4;
   teeth          = 12;
-  circular_pitch = 390;
+  circular_pitch = pitchRadius * 30;
   translate([0,0,-0.2])
   union() {
     gear (
@@ -75,6 +75,7 @@ module candyGear(thickness = 5, bolts=false, bore_diameter = 3.6) {
     );
     if(bolts == true){
       translate([0,0,gearThickness])
+      rotate([0,0,180])
       gearFixationBolts(1);
     }
   }
@@ -82,7 +83,7 @@ module candyGear(thickness = 5, bolts=false, bore_diameter = 3.6) {
 
 module servoGear(bore, hub) {
   teeth          = 12;
-  circular_pitch = 390;
+  circular_pitch = pitchRadius * 30;
   thickness = 4;
   difference(){
     gear (
@@ -126,7 +127,7 @@ module candyPortioner(diameter, length) {
           translate([(diameter/2)-2, -diameter,-length/2])
           cube([10, diameter *2, length *2]);
         }
-        gearFixationBolts(1.2);
+        gearFixationBolts(1.08);
 
       }
       color("white") {
@@ -182,6 +183,30 @@ module servoStrut(thickness, width, height, diameter, holeHeight, offsetFromCent
   }
 }
 
+module caseHook(){
+  height = 12;
+  width = 6;
+  strength = 1.5;
+  hookWidth = 6;
+  difference(){
+    union() {
+      translate([-strength/2, -width/2, 0])
+      cube([strength,width, height]);
+      color("red")
+      translate([0,0,height-(hookWidth/2)])
+      scale([0.6,1,1])
+      rotate([0,45,0])
+      cube([hookWidth,width,hookWidth], center=true);
+    }
+    color("lime")
+    translate([-strength, -width, height])
+    cube([strength*2,width*2, height]);
+    color("purple")
+    translate([strength*-2.5, -width,0])
+    cube([strength*2,width*2, height]);
+  }
+}
+
 
 module basePlate() {
   translate([-37.5,-37.5,0])
@@ -216,16 +241,14 @@ module basePlate() {
       union(){
         difference() {
           difference() {
-            translate([0,0,-2])
             difference(){
               translate([-chuteStrength,-1,0])
               union(){
                 color("lime")
-                translate([0,0,3])
                 cube([chuteWidth+2*chuteStrength,25,27]);
                 color("red")
                 translate([0,24,20])
-                rotate([45,0,0])
+                rotate([40,0,0])
                 cube([chuteWidth+2*chuteStrength,16,chuteHeight]);
                 translate([0,0,5])
                 rotate([33,0,0])
@@ -238,15 +261,15 @@ module basePlate() {
                 translate([0,-10,chuteStrength])
                 cube([chuteWidth,35.5,chuteHeight+10]);
                 color("green")
-                rotate([45,0,0])
-                translate([0,25,chuteStrength-5.3])
+                rotate([40,0,0])
+                translate([0,25,chuteStrength-3.1])
                 cube([chuteWidth,80,chuteHeight+10]);
               }
             }
             color("blue")
             translate([-20,37.5,dispenserHeigth-0.9])
             rotate([0,90,0])
-            tube(32,80);
+            tube(dispenserDiameter+1,80);
           }
           color("red")
           translate([-5,-40,-5])
@@ -263,17 +286,30 @@ module basePlate() {
 
       }
     }
+
+    translate([74.25,68,0])
+    caseHook();
+    translate([74.25,7,0])
+    caseHook();
+    translate([.75,68,0])
+    rotate([0,0,180])
+    caseHook();
+    translate([.75,7,0])
+    rotate([0,0,180])
+    caseHook();
   }
 }
 
 module all(){
-  rotation = 110 * 2 * abs($t-0.5);
+  rotation = maxRotation * 2 * abs($t-0.5);
 
   translate([-20,0,dispenserHeigth])
   rotate([rotation,0,0])
-  candyPortioner(30, 40);
+  color("maroon")
+  candyPortioner(dispenserDiameter, 40);
 
   translate([-25,0,dispenserHeigth])
+  rotate([180,0,0])
   rotate([rotation,0,0]){
     rotate([0,90,0])
     color("green")
@@ -291,44 +327,29 @@ module all(){
 
   translate([5,0,servoHeight])
   rotate([0,270,0])
-  color([0.3,0,0.3])
+  color("purple")
   alignds420(screws=1);
 
   color("grey")
   basePlate();
+
+  /*translate([-37.5,37.5,0])
+  cube([75,1,80]);
+  translate([-37.5,-37.5,80])
+  cube([75,75,1]);*/
 }
 
-$t = 1;
 $fn = 130;
-pitchRadius = 13;
+pitchRadius = 14;
 servoHeight = pitchRadius+5;
 dispenserHeigth = 2*pitchRadius+servoHeight;
+maxRotation = 116;
+//$t = 1;
+dispenserDiameter = 30;
 
-//candyPortioner(30, 40);
+//candyGear(bolts=true);
+//candyPortioner(dispenserDiameter, 40);
+
 
 all();
 //basePlate();
-//translate([-37.5,37.5,0])
-//cube([75,1,75]);
-
-//candyGear(bolts=true);
-//candyPortioner(30, 40);
-
-//translate([0,30,0])
-//servoGear(3.0, 4.7);
-
-/*
-for(factor = [0:1]) {
-  translate([30*factor,0,0])
-  rotate([0,0,factor*16])
-  servoGear(2.6+0.3*factor, 4.5);
-}
-
-translate([0,30,0]){
-  for(factor = [0:1]) {
-    translate([30*factor,0,0])
-    rotate([0,0,factor*16])
-    servoGear(2.8, 4.3+0.3*factor);
-  }
-}
-*/

@@ -169,7 +169,7 @@ module supportStrut(thickness, width, height, singleSupport, singleSupport = fal
 module supportStrutWithHole(thickness, width, height, diameter, holeHeight, offsetFromCenter = 0, singleSupport = false) {
   difference(){
     supportStrut(thickness, width, height, singleSupport);
-    translate([-thickness,offsetFromCenter,holeHeight])
+    translate([-thickness,offsetFromCenter,holeHeight-(diameter/2)])
     rotate([0,90,0])
     tube(diameter, 2*thickness);
   }
@@ -187,7 +187,7 @@ module servoStrut(thickness, width, height, diameter, holeHeight, offsetFromCent
 module caseHook(){
   height = 12;
   width = 10;
-  strength = 4;
+  strength = 3;
   hookWidth = 6;
   difference(){
     union() {
@@ -217,21 +217,29 @@ module basePlate() {
 
       translate([-2.5,-2.5,0]){
         union(){
-          translate([26.7,30.3,0])
-          servoStrut(7,7,servoHeight+3, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=1.3);
+          /*translate([26.7,30.3,0])
+          servoStrut(7,7,servoHeight+3, diameter=3.4, holeHeight=servoHeight, offsetFromCenter=1.3);
 
           translate([26.7,60.3,0])
-          servoStrut(7,7,servoHeight+3, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=-1.3);
+          servoStrut(7,7,servoHeight+3, diameter=3.4, holeHeight=servoHeight, offsetFromCenter=-1.3);*/
+
+          translate([25.5,0,0]){
+            translate([0,60.3,0])
+            supportStrutWithHole(4,7,servoHeight+5, diameter=3.4, holeHeight=servoHeight, offsetFromCenter=-1.3);
+            translate([0,30.3,0])
+            supportStrutWithHole(4,7,servoHeight+5, diameter=3.4, holeHeight=servoHeight, offsetFromCenter=-1.3);
+
+          }
 
           translate([23.2,33,0])
           cube([23,25,servoHeight-6.5]);
 
         }
 
-        translate([62.5,40,0])
+        translate([63,40,0])
         supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth);
 
-        translate([12.5,40,0])
+        translate([12,40,0])
         supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth, singleSupport = true);
       }
 
@@ -328,7 +336,7 @@ module all(){
     servoGear(3.0, 4.65);
   }
 
-  translate([5,0,servoHeight])
+  translate([7,0,servoHeight])
   rotate([0,270,0])
   color("purple")
   alignds420(screws=1);
@@ -342,7 +350,7 @@ module all(){
   cube([75,75,1]);*/
 }
 
-$fn = 130;
+$fn = 30;
 pitchRadius = 14;
 servoHeight = pitchRadius+5;
 dispenserHeigth = 2*pitchRadius+servoHeight;
@@ -352,6 +360,6 @@ dispenserDiameter = 30;
 
 //all();
 //candyPortioner(dispenserDiameter, 40);
-//basePlate();
+basePlate();
 //candyGear(bolts=true);
-servoGear(3.0, 4.65);
+//servoGear(3.0, 4.65);

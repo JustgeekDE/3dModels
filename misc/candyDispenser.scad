@@ -143,18 +143,19 @@ module candyPortioner(diameter, length) {
 }
 
 module supportStrut(thickness, width, height, singleSupport, singleSupport = false) {
+  strutHeight = min(width, 8);
   translate([-thickness/2, -width/2,0])
   union(){
     cube([thickness,width,height]);
     difference() {
-      translate([0,(width-2)/2,width/2])
+      translate([0,(width-5)/2,strutHeight/2])
       rotate([0,-90,0])
       rotate([-90,0,0])
       union(){
         translate([0,0,0])
-        cylinder(2,width,width,$fn=3);
+        cylinder(5,strutHeight,strutHeight,$fn=3);
         translate([0,thickness,0])
-        cylinder(2,width,width,$fn=3);
+        cylinder(5,strutHeight,strutHeight,$fn=3);
 
       }
       if(singleSupport == true) {
@@ -185,15 +186,15 @@ module servoStrut(thickness, width, height, diameter, holeHeight, offsetFromCent
 
 module caseHook(){
   height = 12;
-  width = 6;
-  strength = 1.5;
+  width = 10;
+  strength = 4;
   hookWidth = 6;
   difference(){
     union() {
       translate([-strength/2, -width/2, 0])
       cube([strength,width, height]);
       color("red")
-      translate([0,0,height-(hookWidth/2)])
+      translate([hookWidth/5,0,height-(hookWidth/2)])
       scale([0.6,1,1])
       rotate([0,45,0])
       cube([hookWidth,width,hookWidth], center=true);
@@ -211,92 +212,94 @@ module caseHook(){
 module basePlate() {
   translate([-37.5,-37.5,0])
   union(){
-    cube([75,75,1]);
+    cube([75,75,2.5]);
+    translate([0,0,2]){
 
-    translate([-2.5,-2.5,0]){
-      union(){
-        translate([26.7,30.3,0])
-        servoStrut(7,7,servoHeight+5, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=1.3);
+      translate([-2.5,-2.5,0]){
+        union(){
+          translate([26.7,30.3,0])
+          servoStrut(7,7,servoHeight+3, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=1.3);
 
-        translate([26.7,60.3,0])
-        servoStrut(7,7,servoHeight+5, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=-1.3);
+          translate([26.7,60.3,0])
+          servoStrut(7,7,servoHeight+3, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=-1.3);
 
-        translate([23.2,33,0])
-        cube([23,25,servoHeight-6.5]);
+          translate([23.2,33,0])
+          cube([23,25,servoHeight-6.5]);
 
+        }
+
+        translate([62.5,40,0])
+        supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth);
+
+        translate([12.5,40,0])
+        supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth, singleSupport = true);
       }
 
-      translate([62.5,40,0])
-      supportStrutWithHole(4,10,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth);
-
-      translate([12.5,40,0])
-      supportStrutWithHole(3,10,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth, singleSupport = true);
-    }
-
-    chuteWidth = 36;
-    chuteStrength =2;
-    chuteHeight = 15;
-    translate([37.5-chuteWidth/2,0,0.9])
-    difference(){
-      union(){
-        difference() {
+      chuteWidth = 36;
+      chuteStrength =2;
+      chuteHeight = 15;
+      translate([37.5-chuteWidth/2,0,0.9])
+      difference(){
+        union(){
           difference() {
-            difference(){
-              translate([-chuteStrength,-1,0])
-              union(){
-                color("lime")
-                cube([chuteWidth+2*chuteStrength,25,27]);
-                color("red")
-                translate([0,24,20])
-                rotate([40,0,0])
-                cube([chuteWidth+2*chuteStrength,16,chuteHeight]);
+            difference() {
+              difference(){
+                translate([-chuteStrength,-1,0])
+                union(){
+                  color("lime")
+                  cube([chuteWidth+2*chuteStrength,25,27]);
+                  color("red")
+                  translate([0,24,20])
+                  rotate([40,0,0])
+                  cube([chuteWidth+2*chuteStrength,16,chuteHeight]);
+                  translate([0,0,5])
+                  rotate([33,0,0])
+                  cube([chuteWidth+2*chuteStrength,30,chuteHeight]);
+                }
                 translate([0,0,5])
-                rotate([33,0,0])
-                cube([chuteWidth+2*chuteStrength,30,chuteHeight]);
+                union(){
+                  color("purple")
+                  rotate([33,0,0])
+                  translate([0,-10,chuteStrength])
+                  cube([chuteWidth,35.5,chuteHeight+10]);
+                  color("green")
+                  rotate([40,0,0])
+                  translate([0,25,chuteStrength-3.1])
+                  cube([chuteWidth,80,chuteHeight+10]);
+                }
               }
-              translate([0,0,5])
-              union(){
-                color("purple")
-                rotate([33,0,0])
-                translate([0,-10,chuteStrength])
-                cube([chuteWidth,35.5,chuteHeight+10]);
-                color("green")
-                rotate([40,0,0])
-                translate([0,25,chuteStrength-3.1])
-                cube([chuteWidth,80,chuteHeight+10]);
-              }
+              color("blue")
+              translate([-20,37.5,dispenserHeigth-0.9])
+              rotate([0,90,0])
+              tube(dispenserDiameter+1,80);
             }
-            color("blue")
-            translate([-20,37.5,dispenserHeigth-0.9])
-            rotate([0,90,0])
-            tube(dispenserDiameter+1,80);
+            color("red")
+            translate([-5,-40,-5])
+            cube([chuteWidth+10,40,80]);
           }
-          color("red")
-          translate([-5,-40,-5])
-          cube([chuteWidth+10,40,80]);
+        }
+        color("blue")
+        translate([0,-1,0]) {
+          cube([10,15,3]);
+          translate([13,0,0])
+          cube([10,15,3]);
+          translate([26,0,0])
+          cube([10,15,3]);
+
         }
       }
-      color("blue")
-      translate([0,-1,0]) {
-        cube([10,15,3]);
-        translate([13,0,0])
-        cube([10,15,3]);
-        translate([26,0,0])
-        cube([10,15,3]);
 
-      }
+      translate([73,68,0])
+      caseHook();
+      translate([73,7,0])
+      caseHook();
+      translate([2,68,0])
+      rotate([0,0,180])
+      caseHook();
+      translate([2,7,0])
+      rotate([0,0,180])
+      caseHook();
     }
-
-    translate([74.25,68,0])
-    caseHook();
-    translate([74.25,7,0])
-    caseHook();
-    translate([.75,68,0])
-    rotate([0,0,180])
-    caseHook();
-    translate([.75,7,0])
-    rotate([0,0,180])
-    caseHook();
   }
 }
 
@@ -347,9 +350,8 @@ maxRotation = 116;
 //$t = 1;
 dispenserDiameter = 30;
 
-//candyGear(bolts=true);
+//all();
 //candyPortioner(dispenserDiameter, 40);
-
-
-all();
 //basePlate();
+//candyGear(bolts=true);
+servoGear(3.0, 4.65);

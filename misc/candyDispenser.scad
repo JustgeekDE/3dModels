@@ -219,7 +219,7 @@ module basePlate() {
 
       translate([-2.5,-2.5,0]){
         union(){
-          translate([25.5,0,0]){
+          translate([26,0,0]){
             translate([0,60.3,0])
             supportStrutWithHole(4,7,servoHeight+5, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=-1.3);
             translate([0,30.3,0])
@@ -227,7 +227,7 @@ module basePlate() {
 
           }
 
-          translate([23.2,33,0])
+          translate([24,33,0])
           cube([23,25,servoHeight-6.5]);
 
         }
@@ -239,7 +239,7 @@ module basePlate() {
         supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth, singleSupport = true);
       }
 
-      chuteWidth = 36;
+      chuteWidth = 33;
       chuteStrength =2;
       chuteHeight = 15;
       translate([37.5-chuteWidth/2,0,0])
@@ -282,13 +282,15 @@ module basePlate() {
             cube([chuteWidth+10,40,80]);
           }
         }
+        cutoutSpacing = 3;
+        cutoutWidth = (chuteWidth  - (2 * cutoutSpacing))  / 3;
         color("blue")
         translate([0,-1,0]) {
-          cube([10,15,3]);
-          translate([13,0,0])
-          cube([10,15,3]);
-          translate([26,0,0])
-          cube([10,15,3]);
+          cube([cutoutWidth,15,3]);
+          translate([(1 * cutoutSpacing ) + (1  * cutoutWidth),0,0])
+          cube([cutoutWidth,15,3]);
+          translate([(2 * cutoutSpacing ) + (2  * cutoutWidth),0,0])
+          cube([cutoutWidth,15,3]);
 
         }
       }
@@ -324,7 +326,7 @@ module all(){
 
   }
 
-  translate([-25,0,servoHeight])
+  translate([-24.5,0,servoHeight])
   rotate([-rotation,0,0]){
     rotate([0,90,0])
     rotate([0,0,15])
@@ -332,7 +334,7 @@ module all(){
     servoGear(3.0, 4.65);
   }
 
-  translate([7,0,servoHeight])
+  translate([7.5,0,servoHeight])
   rotate([0,270,0])
   color("purple")
   alignds420(screws=1);
@@ -351,11 +353,11 @@ pitchRadius = 14;
 servoHeight = pitchRadius+5;
 dispenserHeigth = 2*pitchRadius+servoHeight;
 maxRotation = 116;
-//$t = 1;
+$t = 0.5;
 dispenserDiameter = 30;
 
-//all();
+all();
 //candyPortioner(dispenserDiameter, 40);
 //basePlate();
 //candyGear(bolts=true);
-servoGear(3.0, 4.95);
+//servoGear(3.0, 4.95);

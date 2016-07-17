@@ -7,6 +7,13 @@ module tube(diameter, length) {
   circle(r = radius);
 }
 
+module donut(diameter, height, precision=$fn) {
+  rotate_extrude(convexity = 10, $fn=precision)
+  translate([diameter/2, 0, 0])
+  circle(r = height, $fn=precision);
+}
+
+
 module hollowTube(innerDiameter, outerDiameter, length) {
   difference(){
     tube(outerDiameter, length);
@@ -17,27 +24,22 @@ module hollowTube(innerDiameter, outerDiameter, length) {
 }
 
 module curvedSegment(innerDiameter, outerDiameter, height, angle){
-    difference() {
-        difference(){
-            cylinder(h=height, r1=outerDiameter, r2=outerDiameter);
-            translate([0,0,-0.5])
-            cylinder(h=height+1, r1=innerDiameter, r2=innerDiameter);
-        }
-        union() {
-            rotate(a=angle,v=[0,0,1])
-            translate([0,0,-1])
-            cube([outerDiameter,  outerDiameter,  height+2]);
+  difference() {
+    hollowTube(innerDiameter*2, outerDiameter*2, height);
+    union() {
+      rotate(a=angle,v=[0,0,1])
+      translate([0,0,-1])
+      cube([outerDiameter,  outerDiameter,  height+2]);
 
-            rotate(a=180,v=[1,0,0])
-            translate([0,0,-(height+1)])
-            rotate(a=angle,v=[0,0,1])
-            cube([outerDiameter, outerDiameter, height+2]);
+      rotate(a=180,v=[1,0,0])
+      translate([0,0,-(height+1)])
+      rotate(a=angle,v=[0,0,1])
+      cube([outerDiameter, outerDiameter, height+2]);
 
-            translate([-outerDiameter,-outerDiameter,-1])
-            cube([outerDiameter, outerDiameter*2, height+2]);
-
-        }
+      translate([-outerDiameter,-outerDiameter,-1])
+      cube([outerDiameter, outerDiameter*2, height+2]);
     }
+  }
 }
 
 module screwCutout(shaftDiameter, shaftLength, headDiameter, headLength) {
@@ -362,7 +364,7 @@ module bayonetCatch(innerDiameter, outerDiameter){
 }
 
 module hood() {
-  glassDiameter = 62;
+  glassDiameter = 60;
   height = 71;
   edgeLength = 57;
   difference(){
@@ -377,14 +379,14 @@ module hood() {
       hollowTube(glassDiameter-4, glassDiameter+11, 8.5);
     }
     translate([0,0,height-6])
-    hollowTube(glassDiameter, glassDiameter+4, 10);
+    hollowTube(glassDiameter, glassDiameter+6, 10);
     tube(15, height+10);
 
 
     union() {
       translate([0,0,height-6])
       rotate(a=225, v=[0,0,1])
-      bayonetCatch(glassDiameter, glassDiameter+10);
+      bayonetCatch(glassDiameter, glassDiameter+12);
     }
 
     translate([0,0,8])
@@ -406,10 +408,51 @@ module hood() {
     union() {
       translate([0,0,height-6])
       rotate(a=45, v=[0,0,1])
-      bayonetCatch(glassDiameter, glassDiameter+10);
+      bayonetCatch(glassDiameter, glassDiameter+12);
     }
 
   }
+}
+
+module containerHull(diameter, height, cornerRadius){
+
+  union() {
+    translate([0,0,cornerRadius])
+    tube(diameter, height-2*cornerRadius);
+    tube(diameter-2*cornerRadius, height);
+    translate([0,0,height-cornerRadius])
+    donut(diameter-2*cornerRadius, cornerRadius);
+    translate([0,0,cornerRadius])
+    donut(diameter-2*cornerRadius, cornerRadius);
+
+  }
+}
+
+module container(){
+  ringDiameter = 65;
+  diameter = 76;
+  height = 70;
+  tubeLength = 16;
+
+  union(){
+    difference(){
+      union() {
+        containerHull(diameter,height,10);
+        translate([0,0,-tubeLength+8])
+        tube(ringDiameter, tubeLength);
+      }
+      translate([0,0,2])
+      containerHull(diameter-4,height-4,10);
+      translate([0,0,-tubeLength-10])
+      tube(ringDiameter-3, tubeLength+20);
+    }
+    translate([0,0,-tubeLength+8]){
+      curvedSegment(ringDiameter/2, ringDiameter/2+3, 3, 6);
+      rotate(a=180, v=[0,0,1])
+      curvedSegment(ringDiameter/2, ringDiameter/2+3, 3, 6);
+    }
+  }
+
 }
 
 module all(){
@@ -451,7 +494,7 @@ module all(){
   cube([75,75,1]);*/
 }
 
-$fn = 100;
+$fn = 20;
 pitchRadius = 14;
 servoHeight = pitchRadius+5;
 dispenserHeigth = 2*pitchRadius+servoHeight;
@@ -459,9 +502,12 @@ maxRotation = 116;
 $t = 0.5;
 dispenserDiameter = 30;
 
-//all();
+all();
 translate([0,0,-2])
-hood();
+% hood();
+rotate(a=45, v=[0,0,1])
+translate([0,0,76])
+container();
 //candyPortioner(dispenserDiameter, 40);
 //basePlate();
 //candyGear(bolts=true);

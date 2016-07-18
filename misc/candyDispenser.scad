@@ -54,6 +54,20 @@ module m3Cutout(length) {
   screwCutout(3.4, length, 6, 14);
 }
 
+module raspberry(){
+  union() {
+    translate([-29,-24.5,0])
+    m3Cutout(20);
+    translate([29,-24.5,0])
+    m3Cutout(20);
+    translate([-29,24.5,0])
+    m3Cutout(20);
+    translate([29,24.5,0])
+    m3Cutout(20);
+  }
+
+}
+
 module gearFixationBolts(scaleFactor = 1){
   boltDiameter = 16.5;
   boltLength = 2.5+0.1;
@@ -286,7 +300,7 @@ module basePlate() {
                 translate([-chuteStrength,-1,0])
                 union(){
                   color("lime")
-                  cube([chuteWidth+2*chuteStrength,25.2,20]);
+                  cube([chuteWidth+2*chuteStrength,25.2,23]);
                   color("red")
                   translate([0,24,22])
                   rotate([40,0,0])
@@ -314,6 +328,7 @@ module basePlate() {
             }
             color("red")
             translate([-5,-40,-5])
+            rotate([-3,0,0])
             cube([chuteWidth+10,40,80]);
           }
         }
@@ -346,12 +361,12 @@ module basePlate() {
 
 module hoodShape(height, edgeLength){
   wallStrength = 2;
-  sphereDiameter = 70;
+  sphereDiameter = 50;
   difference(){
     rotate(a=45, v=[0,0,1])
     cylinder(h = height, r1 = edgeLength, r2 = edgeLength-5, $fn=4);
-    translate([0,0,height+(sphereDiameter-5)])
-    sphere(r=sphereDiameter);
+//    translate([0,0,height+(sphereDiameter-10)])
+//    sphere(r=sphereDiameter);
   }
 }
 
@@ -365,8 +380,10 @@ module bayonetCatch(innerDiameter, outerDiameter){
 
 module hood() {
   glassDiameter = 60;
-  height = 71;
-  edgeLength = 57;
+  height = 78;
+  edgeLength = 56.5;
+  sphereDiameter = 45;
+
   difference(){
     union(){
       difference(){
@@ -377,10 +394,15 @@ module hood() {
       }
       translate([0,0,height-8.5])
       hollowTube(glassDiameter-4, glassDiameter+11, 8.5);
+      translate([0,0,54])
+      tube(71, 20);
     }
     translate([0,0,height-6])
     hollowTube(glassDiameter, glassDiameter+6, 10);
     tube(15, height+10);
+    translate([0,0,height+(sphereDiameter-10)])
+    sphere(r=sphereDiameter);
+
 
 
     union() {
@@ -410,6 +432,28 @@ module hood() {
       rotate(a=45, v=[0,0,1])
       bayonetCatch(glassDiameter, glassDiameter+12);
     }
+
+    translate([0,0,50])
+    rotate([0,90,0])
+    translate([0,0,-35.6])
+    tube(33,71.2);
+
+    translate([-17,-50,-0.1])
+    union(){
+      cube([34,60,15]);
+      translate([0,0,14.9])
+      rotate([-90,0,0])
+      translate([17,0,-30])
+      difference(){
+        tube(34, 50);
+        translate([-18,0,-5])
+        cube([36,40,60]);
+      }
+    }
+    translate([-0,30,38])
+    rotate([-85,0,0])
+    rotate([0,0,90])
+    raspberry();
 
   }
 }
@@ -492,9 +536,16 @@ module all(){
   cube([75,1,80]);
   translate([-37.5,-37.5,80])
   cube([75,75,1]);*/
+
+  translate([0,0,-2])
+  color([0,1,0,0.3])
+  hood();
+//  rotate(a=45, v=[0,0,1])
+//  translate([0,0,76])
+//  container();
 }
 
-$fn = 20;
+$fn = 130;
 pitchRadius = 14;
 servoHeight = pitchRadius+5;
 dispenserHeigth = 2*pitchRadius+servoHeight;
@@ -503,12 +554,3 @@ $t = 0.5;
 dispenserDiameter = 30;
 
 all();
-translate([0,0,-2])
-% hood();
-rotate(a=45, v=[0,0,1])
-translate([0,0,76])
-container();
-//candyPortioner(dispenserDiameter, 40);
-//basePlate();
-//candyGear(bolts=true);
-//servoGear(3.0, 4.95);

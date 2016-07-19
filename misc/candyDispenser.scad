@@ -267,24 +267,26 @@ module basePlate() {
     translate([0,0,0]){
 
       translate([-2.5,-2.5,0]){
-        union(){
-          translate([26,0,0]){
-            translate([0,60.3,0])
-            supportStrutWithHole(4,7,servoHeight+5, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=-1.3);
-            translate([0,30.3,0])
-            supportStrutWithHole(4,7,servoHeight+5, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=1.3);
+        translate([26,0,0]){
+          union(){
+            translate([2,0,0]){
+              translate([0,60.3,0])
+              supportStrutWithHole(4,7,servoHeight+5, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=-1.3);
+              translate([0,30.3,0])
+              supportStrutWithHole(4,7,servoHeight+5, diameter=2.2, holeHeight=servoHeight, offsetFromCenter=1.3);
 
-          }
+            }
 
-          translate([24,33,0])
-          cube([23,25,servoHeight-6.5]);
+            translate([0,33,0])
+            cube([23,25,servoHeight-6.5]);
+        }
 
         }
 
-        translate([64,40,0])
+        translate([63,40,0])
         supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth);
 
-        translate([12,40,0])
+        translate([13,40,0])
         supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth, singleSupport = true);
       }
 
@@ -303,8 +305,8 @@ module basePlate() {
                   cube([chuteWidth+2*chuteStrength,25.2,23]);
                   color("red")
                   translate([0,24,22])
-                  rotate([40,0,0])
-                  cube([chuteWidth+2*chuteStrength,18,chuteHeight-1.2]);
+                  rotate([39.0,0,0])
+                  cube([chuteWidth+2*chuteStrength,18,chuteHeight-1.4]);
                   translate([0,0,5])
                   rotate([33,0,0])
                   cube([chuteWidth+2*chuteStrength,30,chuteHeight]);
@@ -316,8 +318,8 @@ module basePlate() {
                   translate([0,-10,chuteStrength])
                   cube([chuteWidth,35.5,chuteHeight+10]);
                   color("green")
-                  rotate([40,0,0])
-                  translate([0,25,chuteStrength-3.1])
+                  rotate([38.8,0,0])
+                  translate([0,25,chuteStrength-2.3])
                   cube([chuteWidth,80,chuteHeight+10]);
                 }
               }
@@ -553,4 +555,4 @@ maxRotation = 116;
 $t = 0.5;
 dispenserDiameter = 30;
 
-all();
+//all();

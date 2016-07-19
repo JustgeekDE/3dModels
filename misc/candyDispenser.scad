@@ -125,7 +125,7 @@ module candyGear(thickness = 5, bolts=false, bore_diameter = 3.6) {
     if(bolts == true){
       translate([0,0,gearThickness])
       rotate([0,0,180])
-      gearFixationBolts(1);
+      gearFixationBolts(1.04);
     }
   }
 }

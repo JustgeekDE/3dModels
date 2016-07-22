@@ -497,7 +497,42 @@ module container(){
       curvedSegment(ringDiameter/2, ringDiameter/2+3, 3, 6);
     }
   }
+}
 
+module trayHull(width, height){
+  intersection(){
+    cube([width,width,height]);
+    translate([width/2,width/2,height-2])
+    scale([1,1,0.7])
+    sphere(width/1.6);
+  }
+
+}
+
+module tray(){
+  width = 45;
+  height = 10;
+  hull = 1;
+
+  union(){
+    translate([0,width,2.7]) {
+      slotWidth = 7;
+      slotHeight = 2;
+        translate([-15.5,0,0])
+        cube([slotWidth,4,slotHeight]);
+        translate([-3.5,0,0])
+        cube([slotWidth,4,slotHeight]);
+        translate([8.5,0,0])
+        cube([slotWidth,4,slotHeight]);
+
+    }
+    translate([-width/2, 0,0])
+    difference() {
+      trayHull(width, height);
+      translate([hull/2,hull/2,hull + 0.1])
+      trayHull(width-hull, height-hull);
+    }
+  }
 }
 
 module all(){
@@ -536,6 +571,9 @@ module all(){
   color("grey")
   basePlate();
 
+  translate([0,-88,-2])
+  tray();
+
 /*
   translate([0,0,-2])
   color([0,1,0,0.3])
@@ -545,7 +583,7 @@ module all(){
   container();
 */}
 
-$fn = 13;
+$fn = 150;
 pitchRadius = 14;
 servoHeight = pitchRadius+5;
 dispenserHeigth = 2*pitchRadius+servoHeight;
@@ -553,4 +591,4 @@ maxRotation = 116;
 $t = 0.5;
 dispenserDiameter = 30;
 
-all();
+//all();

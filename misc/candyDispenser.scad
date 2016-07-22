@@ -262,13 +262,17 @@ module basePlate() {
     translate([0,0,0]){
 
       translate([-2.5,-2.5,0]){
-        translate([26,0,0]){
+        translate([26.5,0,0]){
           union(){
             translate([2,0,0]){
               translate([0,60.3,0])
               supportStrutWithHole(4,7,servoHeight+5, diameter=2.6, holeHeight=servoHeight, offsetFromCenter=-1.3);
-              translate([0,30.3,0])
-              supportStrutWithHole(4,7,servoHeight+5, diameter=2.6, holeHeight=servoHeight, offsetFromCenter=1.3);
+              translate([0,30.3,0]) {
+                supportStrutWithHole(4,7,servoHeight+5, diameter=2.6, holeHeight=servoHeight, offsetFromCenter=1.3);
+                translate([7,0,0])
+                supportStrutWithHole(4,7,servoHeight+5, diameter=2.6, holeHeight=servoHeight, offsetFromCenter=1.3);
+
+              }
 
             }
 
@@ -281,7 +285,7 @@ module basePlate() {
         translate([63,40,0])
         supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth);
 
-        translate([13,40,0])
+        translate([12,40,0])
         supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth, singleSupport = true);
       }
 
@@ -519,9 +523,12 @@ module all(){
     rotate([0,0,15])
     color("blue")
     servoGear(3.0, 4.65);
+    rotate([0, 90, 0])
+    color("blue")
+    tube(4, 10);
   }
 
-  translate([9.5,0,servoHeight])
+  translate([10,0,servoHeight])
   rotate([0,270,0])
   color("purple")
   alignds420(screws=1);
@@ -529,10 +536,6 @@ module all(){
   color("grey")
   basePlate();
 
-  /*translate([-37.5,37.5,0])
-  cube([75,1,80]);
-  translate([-37.5,-37.5,80])
-  cube([75,75,1]);*/
 /*
   translate([0,0,-2])
   color([0,1,0,0.3])

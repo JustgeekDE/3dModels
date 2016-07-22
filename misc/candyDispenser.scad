@@ -22,22 +22,17 @@ module hollowTube(innerDiameter, outerDiameter, length) {
 
   }
 }
-
 module curvedSegment(innerDiameter, outerDiameter, height, angle){
-  difference() {
+  outerHull = outerDiameter + 10;
+  difference(){
     hollowTube(innerDiameter*2, outerDiameter*2, height);
     union() {
-      rotate(a=angle,v=[0,0,1])
-      translate([0,0,-1])
-      cube([outerDiameter,  outerDiameter,  height+2]);
-
-      rotate(a=180,v=[1,0,0])
-      translate([0,0,-(height+1)])
-      rotate(a=angle,v=[0,0,1])
-      cube([outerDiameter, outerDiameter, height+2]);
-
-      translate([-outerDiameter,-outerDiameter,-1])
-      cube([outerDiameter, outerDiameter*2, height+2]);
+      rotate([0,0,angle/2])
+      translate([-outerHull, 0, -1])
+      cube([2*outerHull,  outerHull,  height+2]);
+      rotate([0,0,-angle/2])
+      translate([-outerHull, -outerHull, -1])
+      cube([2*outerHull,  outerHull,  height+2]);
     }
   }
 }
@@ -526,7 +521,7 @@ module all(){
     servoGear(3.0, 4.65);
   }
 
-  translate([7.5,0,servoHeight])
+  translate([9.5,0,servoHeight])
   rotate([0,270,0])
   color("purple")
   alignds420(screws=1);
@@ -538,16 +533,16 @@ module all(){
   cube([75,1,80]);
   translate([-37.5,-37.5,80])
   cube([75,75,1]);*/
-
+/*
   translate([0,0,-2])
   color([0,1,0,0.3])
   hood();
-//  rotate(a=45, v=[0,0,1])
-//  translate([0,0,76])
-//  container();
-}
+  rotate(a=45, v=[0,0,1])
+  translate([0,0,76])
+  container();
+*/}
 
-$fn = 130;
+$fn = 13;
 pitchRadius = 14;
 servoHeight = pitchRadius+5;
 dispenserHeigth = 2*pitchRadius+servoHeight;
@@ -555,4 +550,4 @@ maxRotation = 116;
 $t = 0.5;
 dispenserDiameter = 30;
 
-//all();
+all();

@@ -270,7 +270,7 @@ module basePlate() {
               translate([0,30.3,0]) {
                 supportStrutWithHole(4,7,servoHeight+5, diameter=2.6, holeHeight=servoHeight, offsetFromCenter=1.3);
                 translate([7,0,0])
-                supportStrutWithHole(4,7,servoHeight+5, diameter=2.6, holeHeight=servoHeight, offsetFromCenter=1.3);
+                supportStrutWithHole(4,7,servoHeight-3.5, diameter=2.6, holeHeight=servoHeight, offsetFromCenter=1.3);
 
               }
 

@@ -512,7 +512,7 @@ module trayHull(width, height){
 module tray(){
   width = 45;
   height = 10;
-  hull = 1;
+  hull = 2;
 
   union(){
     translate([0,width,2.7]) {
@@ -538,57 +538,67 @@ module tray(){
 module all(){
   rotation = maxRotation * 2 * abs($t-0.5);
 
+  translate([0,0,30])
   translate([-20,0,dispenserHeigth])
   rotate([rotation,0,0])
-  color("maroon")
+  color("DarkGrey")
   candyPortioner(dispenserDiameter, 40);
 
+  translate([-30,0,30])
   translate([-25,0,dispenserHeigth])
   rotate([180,0,0])
   rotate([rotation,0,0]){
     rotate([0,90,0])
-    color("green")
+    color("DarkOrange")
     candyGear(bolts=true);
 
   }
 
+  translate([-20,0,0])
+  translate([0,60,0])
+  color("DarkGrey")
   translate([-24.5,0,servoHeight])
   rotate([-rotation,0,0]){
     rotate([0,90,0])
     rotate([0,0,15])
-    color("blue")
     servoGear(3.0, 4.65);
     rotate([0, 90, 0])
-    color("blue")
     tube(4, 10);
   }
 
+  translate([0,40,0])
   translate([10,0,servoHeight])
   rotate([0,270,0])
-  color("purple")
+  color([0.05,0.05,0.05,0.3])
   alignds420(screws=1);
 
-  color("grey")
+  color("DimGrey")
   basePlate();
 
-  translate([0,-88,-2])
+
+  translate([0,-20,0])
+  translate([0,-82,-2])
+  color("DarkGrey")
   tray();
 
-/*
+
+  translate([0,0,120])
   translate([0,0,-2])
-  color([0,1,0,0.3])
+  color([1,0.6,0,0.3])
   hood();
+  color([0.8,0.8,0.8,0.9])
   rotate(a=45, v=[0,0,1])
-  translate([0,0,76])
+  translate([0,0,130])
+  translate([0,0,100])
   container();
-*/}
+}
 
 $fn = 150;
 pitchRadius = 14;
 servoHeight = pitchRadius+5;
 dispenserHeigth = 2*pitchRadius+servoHeight;
 maxRotation = 116;
-$t = 0.5;
+//$t = 0.5;
 dispenserDiameter = 30;
 
 //all();

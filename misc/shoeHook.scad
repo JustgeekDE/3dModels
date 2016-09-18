@@ -11,21 +11,25 @@ module tube(radius, length, wallThickness = 2){
 $fn = 180;
 
 union() {
+  screwDiameter = 2.5;
+  driverDiameter = 3.3;
   wdith = 20;
   distance = 50;
   thickness = 4;
   radius = 20;
+  color("red")
   translate([-(wdith/2),-distance+5,0])
   difference(){
     cube([wdith,4,30]);
-    translate([(wdith/2),5,10])
     rotate(a=90, v=[1,0,0])
-    cylinder(h = 10, r = 2.5);
-    translate([(wdith/2),5,20])
-    rotate(a=90, v=[1,0,0])
-    cylinder(h = 10, r = 2.5);
+    translate([(wdith/2),10,-5]) {
+      cylinder(h = 10, r = screwDiameter);
+      translate([0,10,0])
+      cylinder(h = 10, r = screwDiameter);
+    }
   }
 
+  color("blue")
   difference(){
     translate([-(wdith/2),-distance+5,0])
     cube([wdith,distance,thickness]);
@@ -33,6 +37,7 @@ union() {
     cylinder(h = 20, r = radius-1);
   }
 
+  color("green")
   difference(){
       translate([0,2,37.5])
       sphere(r=7.5);
@@ -40,11 +45,17 @@ union() {
     cylinder(h = 100, r = radius-1);
   }
 
+  color("lime")
   translate([0,radius,0])
   difference() {
     tube(radius, 45, 3);
     translate([-50,0,-5])
     cube([100,100,80]);
-
+    rotate(a=90, v=[1,0,0])
+    translate([0,10,12]) {
+      cylinder(h = 10, r = driverDiameter);
+      translate([0,10,0])
+      cylinder(h = 10, r = driverDiameter);
+    }
   }
 }

@@ -282,7 +282,7 @@ module basePlate() {
 
         }
 
-        translate([63,40,0])
+        translate([64,40,0])
         supportStrutWithHole(5,15,dispenserHeigth+5, diameter=3.4, holeHeight=dispenserHeigth);
 
         translate([12,40,0])
@@ -486,10 +486,10 @@ module container(){
         translate([0,0,-tubeLength+8])
         tube(ringDiameter, tubeLength);
       }
-      translate([0,0,2])
-      containerHull(diameter-4,height-4,10);
+      translate([0,0,1])
+      containerHull(diameter-2,height-2,10);
       translate([0,0,-tubeLength-10])
-      tube(ringDiameter-3, tubeLength+20);
+      tube(ringDiameter-2.5, tubeLength+20);
     }
     translate([0,0,-tubeLength+8]){
       curvedSegment(ringDiameter/2, ringDiameter/2+3, 3, 6);
@@ -602,3 +602,5 @@ maxRotation = 116;
 dispenserDiameter = 30;
 
 //all();
+//basePlate();
+container();
